@@ -39,6 +39,8 @@ int main() {
     MyDetour.Remove(BackupSize, &MyBackup); // removing detour & restoring backup
 }
 ```
+This code will backup 5 bytes in the `MyBackup` variable, create the detour, wait 5 seconds then remove the detour and restore the backup.
+A value of FALSE will be returned if either the creation of removal fails.
 ## Future (to add)
 - Trampolines
 - ~~Backups and restoration after detour removal~~
