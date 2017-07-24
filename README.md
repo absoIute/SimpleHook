@@ -2,7 +2,8 @@
 A C++ library for hooking/detouring functions
 ## Basic Usage
 You'll need a function to detour and a function to detour to, either can just be address to use.
-Creation:
+
+A basic detour looks like:
 ```cpp
 #include "SimpleHook.hpp"
 
