@@ -17,8 +17,11 @@ int main() {
 Note: alternatively you could use `Detour::SetFrom(void * value)` & `Detour::SetTo(void * value)` to set the values.
 
 If needed, `Detour::Create()` will place NOPs after the detour if only part of an opcode is overwritten, this is done by setting the first argument of the function to the chosen size (size = 5 + number of NOPs to be placed, anything 5 or less will result in none being placed down) `Detour::Create(size)`.
+
 You can also choose to add place a call instead of a jmp with the third argument of the function, `Detour::Create(size, NULL, TRUE)`.
+
 To check the success of a detour creation call `Detour::Hooked()` or check the return value of `Detour::Create()`.
+
 To remove a detour simply add `MyDetour.Remove()` to your program, this will just NOP the detour (unless a backup is used).
 ## Backups & Restoration
 Another feature of the SimpleHook library is that you can restore overwritten opcode.
