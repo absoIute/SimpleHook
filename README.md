@@ -4,7 +4,7 @@ A C++ library for hooking/detouring functions
 You'll need a function to detour and a function to detour to, either can just be address to use.
 Creation:
 Note: alternatively you could use `Detour::SetFrom(void * value)` & `Detour::SetTo(void * value)` to set the values.
-```
+```cpp
 #include "SimpleHook.hpp"
 
 void MyFunction();
