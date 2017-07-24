@@ -21,6 +21,8 @@ public:
 	void * GetTo();
 	BOOL Hooked();
 	
+	BOOL TrampolineSetup(void * placeholder_function, LPCVOID backup, DWORD size, DWORD exit_offset, BOOL call = FALSE);
+
 	BOOL Create(DWORD size = 5, LPVOID backup = NULL, BOOL call = FALSE);
 	BOOL Remove(DWORD size = 5, LPCVOID restore = NULL);
 };
