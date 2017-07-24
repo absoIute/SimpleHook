@@ -50,12 +50,18 @@ BOOL Detour::WriteNOP(void * at, DWORD size) {
 }
 
 BOOL Detour::Create(DWORD size /* amount to write */, LPVOID backup, BOOL call /* set to true if a call should be placed instead of a jmp */) {
-	if (backup) ReadProcessMemory(GetCurrentProcess(), (PVOID)from_address, backup, size, NULL);
+	if (backup) ReadProcessMemory(GetCurrentProcess(), from_address, backup, size, NULL);
 	hooked = WriteJMP(from_address, to_address, call, size);
 	return hooked;
 }
 
 BOOL Detour::Remove(DWORD size, LPCVOID restore) {
-	if (restore) return WriteProcessMemory(GetCurrentProcess(), (PVOID)from_address, restore, size, NULL);
+	if (restore) {
+		DWORD backup, oldprotect;
+		if (!VirtualProtect(from_address, size, PAGE_EXECUTE_READWRITE, &backup)) return FALSE;
+		if (!WriteProcessMemory(GetCurrentProcess(), from_address, restore, size, NULL)) return FALSE;
+		if (!VirtualProtect(from_address, size, backup, &oldprotect)) return FALSE;
+		return TRUE;
+	}
 	return WriteNOP(from_address, size);
 }
