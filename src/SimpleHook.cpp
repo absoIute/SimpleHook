@@ -1,4 +1,5 @@
 #include "SimpleHook.hpp"
+#include <string>
 
 Detour::Detour() {
 	hooked = FALSE;
@@ -30,23 +31,34 @@ BOOL Detour::Hooked() {
 	return hooked;
 }
 
-BOOL Detour::WriteJMP(void * from, void * to, BOOL call, DWORD size = 5) {
-	DWORD backup, oldprotect, offset = (DWORD)to - (DWORD)from - 5;
-	if (!VirtualProtect(from, size, PAGE_EXECUTE_READWRITE, &backup)) return FALSE;
+BOOL Detour::WriteJMP(void * from, void * to, BOOL call, DWORD size) {
+	DWORD bkup, oldprotect, offset = (DWORD)to - (DWORD)from - 5;
+	if (!VirtualProtect(from, size, PAGE_EXECUTE_READWRITE, &bkup)) return FALSE;
 	memset(from, 0xE9 - call, 1);
 	memcpy((void *)((DWORD)from + 1), &offset, 4);
 	for (int i = 0; i < size - 5; i++)
 		memset((void *)((DWORD)from + 6 + i), 0x90, 1);
-	if (!VirtualProtect(from, size, backup, &oldprotect)) return FALSE;
+	if (!VirtualProtect(from, size, bkup, &oldprotect)) return FALSE;
+	return TRUE;
 }
 
 BOOL Detour::WriteNOP(void * at, DWORD size) {
-	DWORD backup, oldprotect;
-	if (!VirtualProtect(at, 5, PAGE_EXECUTE_READWRITE, &backup)) return FALSE;
+	DWORD bkup, oldprotect;
+	if (!VirtualProtect(at, 5, PAGE_EXECUTE_READWRITE, &bkup)) return FALSE;
 	for (int i = 0; i < size; i++)
 		memset((void *)((DWORD)at + i), 0x90, 1);
-	if (!VirtualProtect(at, 5, backup, &oldprotect)) return FALSE;
+	if (!VirtualProtect(at, 5, bkup, &oldprotect)) return FALSE;
 	return TRUE;
+}
+
+BOOL Detour::TrampolineSetup(void * placeholder_function, LPCVOID backup, DWORD size, DWORD exit_offset, BOOL call) {
+	if (backup) {
+		DWORD bkup, oldprotect;
+		if (!VirtualProtect(placeholder_function, 0x1000, PAGE_EXECUTE_READWRITE, &bkup)) return FALSE;
+		memcpy(placeholder_function, &backup, size);
+		if (!VirtualProtect(placeholder_function, 0x1000, bkup, &oldprotect)) return FALSE;
+	}
+	return WriteJMP((void *)((DWORD)placeholder_function + exit_offset), (void *)((DWORD)from_address + 5), call, 5);
 }
 
 BOOL Detour::Create(DWORD size /* amount to write */, LPVOID backup, BOOL call /* set to true if a call should be placed instead of a jmp */) {
