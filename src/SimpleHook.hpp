@@ -7,6 +7,9 @@ private:
 	void * from_address;
 	void * to_address;
 	BOOL hooked;
+
+	BOOL WriteJMP(void * from, void * to, BOOL call, DWORD size);
+	BOOL WriteNOP(void * at, DWORD size);
 public:
 	Detour();
 	Detour(void * from, void * to);
