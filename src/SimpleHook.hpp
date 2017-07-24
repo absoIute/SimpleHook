@@ -7,7 +7,7 @@ private:
 	void * from_address;
 	void * to_address;
 	BOOL hooked;
-
+	
 	BOOL WriteJMP(void * from, void * to, BOOL call, DWORD size);
 	BOOL WriteNOP(void * at, DWORD size);
 public:
@@ -20,7 +20,7 @@ public:
 	void * GetFrom();
 	void * GetTo();
 	BOOL Hooked();
-
-	BOOL Create(DWORD size = 5, BOOL call = FALSE);
-	BOOL Remove();
+	
+	BOOL Create(DWORD size = 5, LPVOID backup = NULL, BOOL call = FALSE);
+	BOOL Remove(DWORD size = 5, LPCVOID restore = NULL);
 };
