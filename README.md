@@ -45,6 +45,8 @@ int main() {
 ```
 This code will backup 5 bytes in the `MyBackup` variable, create the detour, wait 5 seconds then remove the detour and restore the backup.
 A value of FALSE will be returned if either the creation of removal fails.
+
+Since the backups are restored exactly as the were originally, you may need to make modifications to jumps, calls, etc..
 ## Future (to add)
 - ~~Trampolines~~
 - ~~Backups and restoration after detour removal~~
