@@ -1,5 +1,4 @@
 #include "SimpleHook.hpp"
-#include <string>
 
 Detour::Detour() {
 	hooked = FALSE;
